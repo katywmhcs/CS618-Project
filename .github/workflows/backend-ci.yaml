@@ -1,5 +1,4 @@
 name: Blog Backend CI
-
 on:
   push:
     branches:
@@ -7,7 +6,6 @@ on:
   pull_request:
     branches:
       - main
-
 jobs:
   lint-and-test:
     runs-on: ubuntu-latest
@@ -17,23 +15,16 @@ jobs:
     defaults:
       run:
         working-directory: ./backend
-        
     steps:
       - uses: actions/checkout@v3
-
-      # ✅ Combined the name and the action into a single step
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
-          # ✅ Correctly indented 'node-version'
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
-          
       - name: Install dependencies
         run: npm install
-
       - name: Run linter on backend
         run: npm run lint
-
       - name: Run backend tests
         run: npm test
