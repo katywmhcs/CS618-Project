@@ -16,24 +16,19 @@ jobs:
         node-version: [20.x]
 
     steps:
-      # ✅ Step 1: Check out the code
       - uses: actions/checkout@v3
 
-      # ✅ Step 2: Set up Node.js
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
 
-      # ✅ Step 3: Install dependencies
       - name: Install dependencies
         run: npm install
 
-      # ✅ Step 4: Run linter
       - name: Run linter on frontend
         run: npm run lint
 
-      # ✅ Step 5: Build the project
       - name: Build frontend
         run: npm run build
