@@ -12,6 +12,13 @@ jobs:
     strategy:
       matrix:
         node-version: [16.x, 18.x, 20.x]
+
+    services:
+      mongodb:
+        image: mongo
+        ports:
+          - 27017:27017
+          
     defaults:
       run:
         working-directory: ./backend
