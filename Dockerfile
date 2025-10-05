@@ -1,13 +1,21 @@
-FROM node:20 AS build
-ARG VITE_BACKEND_URL=https://shiny-train-jjjrwwgqjpw535wxp-3001.app.github.dev/api/v1
-WORKDIR /build
-COPY package.json .
-COPY package-lock.json .
+# Stage 1: Build the React application
+FROM node:20-alpine AS builder
+WORKDIR /app
+COPY package*.json ./
 RUN npm install
 COPY . .
+# ✅ Build with a placeholder instead of a real URL
+RUN npm run build -- --base=./ --emptyOutDir && \
+    sed -i 's|import.meta.env.VITE_BACKEND_URL|"VITE_BACKEND_URL_PLACEHOLDER"|g' dist/assets/index-*.js
 
-RUN npm run build
+# Stage 2: Serve the application with Nginx
+FROM nginx:1.27-alpine
+# ✅ Copy the new entrypoint script and make it executable
+COPY --from=builder /app/entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+COPY --from=builder /app/dist /usr/share/nginx/html
 
-FROM nginx AS final
-WORKDIR /usr/share/nginx/html
-COPY --from=build /build/dist .
+EXPOSE 80
+
+# ✅ Set the entrypoint to run the script on container startup
+ENTRYPOINT ["/entrypoint.sh"]
