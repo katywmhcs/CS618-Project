@@ -1,4 +1,4 @@
-import mongoose from 'mongoose'
+import mongoose, { Schema } from 'mongoose'
 
 const postSchema = new mongoose.Schema(
   {
@@ -7,7 +7,7 @@ const postSchema = new mongoose.Schema(
       required: [true, 'title is required'],
       trim: true,
     },
-    author: String,
+    author: { type: Schema.Types.ObjectId, ref: 'user', required: true },
     contents: String,
     tags: [String],
   },
